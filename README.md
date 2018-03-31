@@ -10,12 +10,12 @@ go get github.com/windler/go-cachegrind
 # Usage
 
 ```go
-    cg := cachegrind.Parse("path/to/file.cachegrind")
-    main := cg.GetMainFunction()
-    totalTime := main.GetMeasurement("Time")
+cg := cachegrind.Parse("path/to/file.cachegrind")
+main := cg.GetMainFunction()
+totalTime := main.GetMeasurement("Time")
 
-    for _, call := range main.GetCalls() {
-        calledFn := call.GetFunction()
-        //... 
-    }
+for _, call := range main.GetCalls() {
+    calledFn := call.GetFunction()
+    //... 
+}
 ```
