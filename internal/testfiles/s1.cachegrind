@@ -1,0 +1,71 @@
+version: 1
+creator: xdebug 2.6.0 (PHP 7.2.3)
+cmd: /var/www/html/index.php
+part: 1
+positions: line
+
+events: Time Memory
+
+fl=(1) php:internal
+fn=(1) php::sleep
+13 5000063 0
+
+fl=(2) /var/www/html/index.php
+fn=(2) fun2
+12 34 0
+cfl=(1)
+cfn=(1)
+calls=1 0 0
+13 5000063 0
+
+fl=(1)
+fn=(1)
+13 5000023 0
+
+fl=(2)
+fn=(2)
+12 33 0
+cfl=(1)
+cfn=(1)
+calls=1 0 0
+13 5000023 0
+
+fl=(1)
+fn=(1)
+13 5000050 0
+
+fl=(2)
+fn=(2)
+12 33 0
+cfl=(1)
+cfn=(1)
+calls=1 0 0
+13 5000050 0
+
+fl=(2)
+fn=(3) fun1
+5 54 32
+cfl=(2)
+cfn=(2)
+calls=1 0 0
+7 5000097 0
+cfl=(2)
+cfn=(2)
+calls=1 0 0
+7 5000056 0
+cfl=(2)
+cfn=(2)
+calls=1 0 0
+9 5000083 0
+
+fl=(2)
+fn=(4) {main}
+
+summary: 15000303 32
+
+1 10 0
+cfl=(2)
+cfn=(3)
+calls=1 0 0
+3 15000293 32
+
