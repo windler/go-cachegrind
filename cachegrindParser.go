@@ -12,10 +12,11 @@ import (
 var events []string
 
 type goCachegrind struct {
-	functions    []*cgFn
-	parseContext parseContext
-	functionMap  map[string]*cgFn
-	mainFn       *cgFn
+	functions       []*cgFn
+	parseContext    parseContext
+	functionMap     map[string]*cgFn
+	functionNameMap map[string]string
+	mainFn          *cgFn
 }
 
 type parseContext struct {
@@ -96,9 +97,10 @@ func (c cgCall) GetMeasurement(part string) int64 {
 //Parse parses a callgrind file content and creates a Cachegrind object
 func Parse(fileName string) (Cachegrind, error) {
 	cg := &goCachegrind{
-		functions:    []*cgFn{},
-		functionMap:  map[string]*cgFn{},
-		parseContext: parseContext{},
+		functions:       []*cgFn{},
+		functionMap:     map[string]*cgFn{},
+		functionNameMap: map[string]string{},
+		parseContext:    parseContext{},
 	}
 
 	file, err := os.Open(fileName)
@@ -195,10 +197,17 @@ or
 func (cg *goCachegrind) parseFunction(line string) {
 	idAndFile := strings.Split(line, " ")
 
-	if len(idAndFile) == 2 {
+	fnID := cg.parseContext.lastFileID + "_" + idAndFile[0]
+	if cg.functionMap[fnID] == nil {
+		var name string
+		if len(idAndFile) == 2 {
+			name = idAndFile[1]
+		} else {
+			name = cg.functionNameMap[line]
+		}
 
 		newFn := &cgFn{
-			name:   idAndFile[1],
+			name:   name,
 			nameID: idAndFile[0],
 			file:   cg.parseContext.lastFile,
 			fileID: cg.parseContext.lastFileID,
@@ -207,14 +216,13 @@ func (cg *goCachegrind) parseFunction(line string) {
 		cg.functions = append(cg.functions, newFn)
 		cg.parseContext.currentFn = newFn
 
-		id := newFn.fileID + "_" + newFn.nameID
-		cg.functionMap[id] = newFn
+		cg.functionMap[fnID] = newFn
+		cg.functionNameMap[line] = name
 
 		if strings.HasSuffix(line, "{main}") {
 			cg.mainFn = newFn
 		}
 	} else {
-		fnID := cg.parseContext.lastFileID + "_" + line
 		cg.parseContext.currentFn = cg.functionMap[fnID]
 	}
 }
