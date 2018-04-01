@@ -2,7 +2,6 @@ package cachegrind
 
 import (
 	"bufio"
-	"fmt"
 	"log"
 	"os"
 	"regexp"
@@ -147,7 +146,6 @@ func (cg *goCachegrind) parseMeasurement(line string) {
 
 	for _, m := range measurements {
 		measure, _ := strconv.ParseInt(m, 10, 64)
-		fmt.Println(measure)
 		if len(cg.parseContext.currentFn.calls) > 0 {
 			cg.getLastCall().measurements = append(cg.getLastCall().measurements, measure)
 		} else {
@@ -221,7 +219,6 @@ Line format (without prefix):
 func (cg *goCachegrind) parseCalledFunction(line string) {
 	fnID := cg.parseContext.lastCalledFile + "_" + line
 	calledFn := cg.functionMap[fnID]
-	fmt.Println(calledFn.name)
 
 	cg.getLastCall().fn = calledFn
 }
