@@ -36,6 +36,7 @@ type cgFn struct {
 
 type cgCall struct {
 	fn           *cgFn
+	line         int
 	measurements []int64
 }
 
@@ -82,6 +83,10 @@ func (cg goCachegrind) GetMainFunction() Function {
 
 func (c cgCall) GetFunction() Function {
 	return c.fn
+}
+
+func (c cgCall) GetLine() int {
+	return c.line
 }
 
 func (c cgCall) GetMeasurement(part string) int64 {
@@ -142,12 +147,14 @@ Line format:
 	3 15000293 32
 */
 func (cg *goCachegrind) parseMeasurement(line string) {
-	measurements := strings.Split(line, " ")[1:]
+	measurements := strings.Split(line, " ")
+	callLine, _ := strconv.Atoi(measurements[0])
 
-	for _, m := range measurements {
+	for _, m := range measurements[1:] {
 		measure, _ := strconv.ParseInt(m, 10, 64)
 		if len(cg.parseContext.currentFn.calls) > 0 {
 			cg.getLastCall().measurements = append(cg.getLastCall().measurements, measure)
+			cg.getLastCall().line = callLine
 		} else {
 			cg.parseContext.currentFn.measurements = append(cg.parseContext.currentFn.measurements, measure)
 		}

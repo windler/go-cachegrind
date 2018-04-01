@@ -16,5 +16,6 @@ type Function interface {
 //FunctionCall represents a function call within a cachegrind-file
 type FunctionCall interface {
 	GetFunction() Function
+	GetLine() int
 	GetMeasurement(part string) int64
 }
