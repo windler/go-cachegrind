@@ -18,4 +18,5 @@ type FunctionCall interface {
 	GetFunction() Function
 	GetLine() int
 	GetMeasurement(part string) int64
+	GetMeasurements() map[string]int64
 }

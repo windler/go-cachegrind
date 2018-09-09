@@ -67,6 +67,21 @@ func (fn cgFn) GetMeasurement(part string) int64 {
 	return measure
 }
 
+func (fn cgFn) GetMeasurements() map[string]int64 {
+	measurements := map[string]int64{}
+	for _, e := range events {
+		measure := fn.measurements[getMeasurementIndex(e)]
+
+		for _, call := range fn.calls {
+			measure += call.GetMeasurement(e)
+		}
+
+		measurements[e] = measure
+	}
+
+	return measurements
+}
+
 func getMeasurementIndex(part string) int {
 	i := 0
 	for _, p := range events {
@@ -92,6 +107,15 @@ func (c cgCall) GetLine() int {
 
 func (c cgCall) GetMeasurement(part string) int64 {
 	return c.measurements[getMeasurementIndex(part)]
+}
+
+func (c cgCall) GetMeasurements() map[string]int64 {
+	measurements := map[string]int64{}
+	for _, e := range events {
+		measurements[e] = c.measurements[getMeasurementIndex(e)]
+	}
+
+	return measurements
 }
 
 //Parse parses a callgrind file content and creates a Cachegrind object
@@ -141,7 +165,7 @@ func (cg *goCachegrind) parseLine(line string) {
 }
 
 func (cg *goCachegrind) callParseFunction(line, prefix string, f func(string)) {
-	f(strings.Trim(line, prefix))
+	f(strings.TrimLeft(line, prefix))
 }
 
 /*

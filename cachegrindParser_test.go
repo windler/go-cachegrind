@@ -38,6 +38,8 @@ func TestParseExample1(t *testing.T) {
 	call1 := calls[0]
 	assert.Equal(t, int64(15000293), call1.GetMeasurement("Time"))
 	assert.Equal(t, int64(32), call1.GetMeasurement("Memory"))
+	assert.Equal(t, int64(15000293), call1.GetMeasurements()["Time"])
+	assert.Equal(t, int64(32), call1.GetMeasurements()["Memory"])
 	assert.Equal(t, 3, call1.GetLine())
 
 	calledFunction := call1.GetFunction()
