@@ -145,6 +145,10 @@ func Parse(fileName string) (Cachegrind, error) {
 	return cg, err
 }
 
+var (
+	measurementLine = regexp.MustCompile(`^(\d+ )+`)
+)
+
 func (cg *goCachegrind) parseLine(line string) {
 	if strings.HasPrefix(line, "events:") {
 		cg.callParseFunction(line, "events: ", cg.parseEvents)
@@ -158,7 +162,6 @@ func (cg *goCachegrind) parseLine(line string) {
 		cg.callParseFunction(line, "cfn=", cg.parseCalledFunction)
 	}
 
-	measurementLine := regexp.MustCompile(`^(\d+ )+`)
 	if measurementLine.MatchString(line) {
 		cg.parseMeasurement(line)
 	}
